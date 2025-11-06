@@ -1,6 +1,6 @@
 inherit_from: .rubocop_todo.yml
 
-require:
+plugins:
   - rubocop-rake
   - rubocop-rspec
   - rubocop-performance
@@ -27,3 +27,6 @@ Style/Documentation:
 Metrics/BlockLength:
   Exclude:
     - spec/**/*
+
+ThreadSafety/DirChdir:
+  AllowCallWithBlock: true
