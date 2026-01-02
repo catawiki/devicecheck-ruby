@@ -34,7 +34,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'base64'
   spec.add_dependency 'cbor', '~> 0.5.9'
-  spec.add_dependency 'openssl', '~> 3'
+  spec.add_dependency 'openssl', '>= 3', '< 5'
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html
