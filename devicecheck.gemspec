@@ -33,7 +33,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_dependency 'base64'
-  spec.add_dependency 'cbor', '~> 0.5.9'
+  spec.add_dependency 'cbor', '>= 0.5.9', '< 0.7.0'
   spec.add_dependency 'openssl', '>= 3', '< 5'
 
   # For more information and examples about making a new gem, check out our
