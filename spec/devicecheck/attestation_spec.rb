@@ -74,6 +74,27 @@ RSpec.describe Devicecheck::Attestation do
   let(:credential_id) { OpenSSL::Digest::SHA256.digest(cred_key.public_key.to_octet_string(:uncompressed)) }
   let(:decoded_auth_data) { [rp_id_hash, nil, sign_count, aaguid, credential_id] }
 
+  context 'with a complete attestation' do
+    let(:auth_data) do
+      [rp_id_hash, 0, sign_count, aaguid, credential_id.bytesize, credential_id].pack('a32cNa16na*')
+    end
+
+    let(:cred_cert) do
+      cert = generate_cert(cred_dn, cred_key, 10, issuer: root_certificate.subject)
+      cert.add_extension(OpenSSL::X509::Extension.new('1.2.840.113635.100.8.2', extension_data))
+      cert.sign(root_key, 'sha256')
+      cert
+    end
+
+    before do
+      stub_const('Devicecheck::Validators::CertificateChainValidator::ROOT_CA', root_certificate)
+    end
+
+    it 'validates the certificate and authenticator data and returns the public key and receipt' do
+      expect(subject).to eq([cred_key.public_to_der, receipt])
+    end
+  end
+
   context 'when data is valid' do
     before do
       allow(Devicecheck::Validators::CertificateChainValidator).to(
