@@ -41,7 +41,44 @@ RSpec.describe Devicecheck::Assertion do
   end
 
   context 'when data is valid' do
-    it { expect { subject }.not_to raise_error }
+    let(:sign_count) { 2 }
+    let(:count) { 1 }
+
+    it { is_expected.to eq(2) }
+  end
+
+  context 'when the counter equals the stored count' do
+    let(:sign_count) { 1 }
+    let(:count) { 1 }
+
+    it { is_expected.to eq(1) }
+  end
+
+  context 'when the signed client data has been changed' do
+    let(:assertion) do
+      original_data = { foo: 100, challenge: }.to_json
+      original_nonce = OpenSSL::Digest::SHA256.digest(
+        authenticator_data + OpenSSL::Digest::SHA256.digest(original_data)
+      )
+      Base64.strict_encode64(
+        { signature: pkey.sign(OpenSSL::Digest.new('SHA256'), original_nonce),
+          authenticatorData: authenticator_data }.to_cbor
+      )
+    end
+
+    it { expect { subject }.to raise_error 'Failed signature check' }
+  end
+
+  context 'when the signature is from another key' do
+    let(:assertion) do
+      other_key = OpenSSL::PKey::EC.generate('prime256v1')
+      Base64.strict_encode64(
+        { signature: other_key.sign(OpenSSL::Digest.new('SHA256'), nonce),
+          authenticatorData: authenticator_data }.to_cbor
+      )
+    end
+
+    it { expect { subject }.to raise_error 'Failed signature check' }
   end
 
   context 'when RP ID does not match' do
