@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.homepage = 'https://github.com/catawiki/devicecheck-ruby'
   spec.description = 'Pure Ruby implementation of the Apple App Attestation server side verifier'
   spec.summary = 'Apple App Attestation (aka DeviceCheck) support for Ruby.'
-  spec.required_ruby_version = '>= 3.2'
+  spec.required_ruby_version = '>= 3.3'
 
   spec.metadata = {
     'bug_tracker_uri' => 'https://github.com/catawiki/devicecheck-ruby/issues',
